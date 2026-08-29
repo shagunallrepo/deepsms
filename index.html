@@ -698,11 +698,37 @@
             document.getElementById(containerId).innerHTML = html + "</tbody></table>";
         }
 
-        setInterval(() => {
+                setInterval(() => {
             if(document.getElementById('menu-dashboard').classList.contains('active')) loadDashboardStats();
             if(document.getElementById('menu-traffic').classList.contains('active')) fetchMasterTraffic();
             if(document.getElementById('menu-mysms').classList.contains('active')) fetchMySms();
         }, 5000);
+
+        async function createManager() {
+            const newUser = document.getElementById('cloner-username').value;
+            const newPass = document.getElementById('cloner-password').value;
+            
+            if (!newUser || !newPass) return alert("Please enter both a username and password.");
+            
+            const btn = document.querySelector('#cloner-panel button');
+            btn.innerText = "Creating... ⏳"; btn.disabled = true;
+            
+            try {
+                const res = await fetch(`${RENDER_BACKEND_URL}/api/add-manager`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ username: newUser, password: newPass })
+                });
+                const data = await res.json(); 
+                alert(data.message || "Manager cloned successfully!");
+                document.getElementById('cloner-username').value = '';
+                document.getElementById('cloner-password').value = '';
+            } catch(err) { 
+                alert("Failed to connect to backend to save manager."); 
+            } finally { 
+                btn.innerText = "Clone Manager"; btn.disabled = false; 
+            }
+        }
     </script>
 </body>
 </html>
