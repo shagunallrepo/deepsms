@@ -293,12 +293,59 @@
             if (savedUser && savedPass) { document.getElementById('username').value = savedUser; document.getElementById('password').value = savedPass; document.getElementById('remember-me').checked = true; }
         };
 
-        function login() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-            if(!user) return alert("Enter a username");
-            if (document.getElementById('remember-me').checked) { localStorage.setItem('deepSmsUser', user); localStorage.setItem('deepSmsPass', pass); } 
-            else { localStorage.removeItem('deepSmsUser'); localStorage.removeItem('deepSmsPass'); }
+        async function login() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    if(!user || !pass) return alert("Enter username and password");
+    
+    const btn = document.querySelector('.login-card button');
+    btn.innerText = "Logging in... ⏳"; btn.disabled = true;
+
+    try {
+        // Ask backend if this user is a cloned manager
+        const res = await fetch(`${RENDER_BACKEND_URL}/api/verify-manager`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: user, password: pass })
+        });
+        const data = await res.json();
+        
+        if (document.getElementById('remember-me').checked) { localStorage.setItem('deepSmsUser', user); localStorage.setItem('deepSmsPass', pass); } 
+        else { localStorage.removeItem('deepSmsUser'); localStorage.removeItem('deepSmsPass'); }
+
+        loggedInUser = user;
+        document.getElementById('my-api-link').value = `${RENDER_BACKEND_URL}/api/my-sms/${loggedInUser}`;
+
+        if (data.isManager) {
+            isManager = true;
+            document.getElementById('display-user-role').innerText = `Manager: ${user} 👑`;
+            document.getElementById('manager-add-range').style.display = "block";
+            document.getElementById('manager-api-settings').style.display = "block";
+            document.getElementById('menu-traffic').style.display = "block";
+            document.getElementById('menu-requests').style.display = "block"; 
+            document.getElementById('menu-cloner').style.display = "block";
+            document.getElementById('menu-mynumbers').innerHTML = "📱 All Numbers";
+            loadApiLink();
+        } else {
+            isManager = false;
+            document.getElementById('display-user-role').innerText = `User: ${user} 👤`;
+            document.getElementById('manager-api-settings').style.display = "none";
+            document.getElementById('menu-traffic').style.display = "block"; 
+            document.getElementById('menu-requests').style.display = "none"; 
+            document.getElementById('menu-cloner').style.display = "none";
+            document.getElementById('menu-mynumbers').innerHTML = "📱 My Numbers";
+        }
+
+        document.getElementById('login-wrapper').style.display = 'none';
+        document.getElementById('dashboard-wrapper').style.display = 'flex';
+        loadMyNumbers().then(() => switchTab('dashboard'));
+        
+    } catch (err) {
+        alert("Connection failed! Check backend URL.");
+    } finally {
+        btn.innerText = "Login"; btn.disabled = false;
+    }
+}
 
             loggedInUser = user;
             
