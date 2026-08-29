@@ -346,7 +346,7 @@
         btn.innerText = "Login"; btn.disabled = false;
     }
 }
-            
+      loggedInUser = user;
             // Set the Personal API Link for this specific user
             document.getElementById('my-api-link').value = `${RENDER_BACKEND_URL}/api/my-sms/${loggedInUser}`;
 
