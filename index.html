@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEEP SMS PANEL</title>
+    <style>
+        body {
+            background-color: #0d1b2a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #1b263b;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #415a77;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background-color: #778da9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #415a77;
+        }
+        #dashboard {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px;
+        }
+        .tab {
+            background-color: #415a77;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .error {
+            color: #ff4d4d;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Screen -->
+    <div class="container" id="loginScreen">
+        <h1>DEEP SMS PANEL</h1>
+        <p>Manager Login</p>
+        <input type="text" id="username" placeholder="Username" autocomplete="off">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <div id="loginError" class="error"></div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div class="container" id="dashboard">
+        <h1>DEEP SMS DASHBOARD</h1>
+        <div class="tab">
+            <h3>Master Traffic</h3>
+            <p id="backendStatus">Connecting to Render backend...</p>
+        </div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        // Your live Render backend URL
+        const RENDER_BACKEND_URL = "https://deepsmspanel.onrender.com";
+
+        function login() {
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            const errorDiv = document.getElementById("loginError");
+
+            if (user === "Kite" && pass === "prince") {
+                document.getElementById("loginScreen").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                checkBackend();
+            } else {
+                errorDiv.innerText = "Invalid Manager Credentials.";
+            }
+        }
+
+        function logout() {
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("loginScreen").style.display = "block";
+            document.getElementById("dashboard").style.display = "none";
+        }
+
+        async function checkBackend() {
+            const statusText = document.getElementById("backendStatus");
+            try {
+                // Ping the backend to check connection
+                let response = await fetch(RENDER_BACKEND_URL);
+                if (response.ok) {
+                    statusText.innerText = "Backend Connected Successfully! Data is live.";
+                    statusText.style.color = "#4caf50"; 
+                }
+            } catch (error) {
+                statusText.innerText = "Error: Cannot reach Render backend.";
+                statusText.style.color = "#ff4d4d";
+            }
+        }
+    </script>
+</body>
+</html>
