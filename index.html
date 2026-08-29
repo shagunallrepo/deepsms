@@ -355,30 +355,6 @@
             // Set the Personal API Link for this specific user
             document.getElementById('my-api-link').value = `${RENDER_BACKEND_URL}/api/my-sms/${loggedInUser}`;
 
-            if (user === "Kite" && pass === "prince") {
-                isManager = true;
-                document.getElementById('display-user-role').innerText = "Manager: Kite 👑";
-                document.getElementById('manager-add-range').style.display = "block";
-                document.getElementById('manager-api-settings').style.display = "block";
-                document.getElementById('menu-traffic').style.display = "block";
-                document.getElementById('menu-requests').style.display = "block"; 
-                document.getElementById('menu-mynumbers').innerHTML = "📱 All Numbers";
-                document.getElementById('menu-cloner').style.display = "block";
-                loadApiLink();
-            } else {
-                isManager = false;
-                document.getElementById('display-user-role').innerText = `User: ${user} 👤`;
-                document.getElementById('manager-api-settings').style.display = "none";
-                document.getElementById('menu-traffic').style.display = "block"; 
-                document.getElementById('menu-requests').style.display = "none"; 
-                document.getElementById('menu-mynumbers').innerHTML = "📱 My Numbers";
-            }
-
-            document.getElementById('login-wrapper').style.display = 'none';
-            document.getElementById('dashboard-wrapper').style.display = 'flex';
-            loadMyNumbers().then(() => switchTab('dashboard'));
-        }
-
         function logout() { loggedInUser = ''; document.getElementById('dashboard-wrapper').style.display = 'none'; document.getElementById('login-wrapper').style.display = 'flex'; }
 
         function copyMyApi() {
