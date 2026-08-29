@@ -380,26 +380,41 @@
             if (tab === 'requests') loadAccountRequests();
         }
 
-        async function loadApiLink() {
+                async function loadApiLink() {
             try {
                 const res = await fetch(`${RENDER_BACKEND_URL}/api/settings/api-link`);
                 const data = await res.json();
-                document.getElementById('api-link-input').value = data.apiLink;
-            } catch(err) { console.error(err); }
+                if (data.links && data.links.length > 0) {
+                    for (let i = 0; i < 10; i++) {
+                        if (data.links[i]) {
+                            document.getElementById(`api-link-${i+1}`).value = data.links[i];
+                        }
+                    }
+                }
+            } catch(err) { console.error("Error loading APIs:", err); }
         }
 
         async function updateApiLink() {
-            const newLink = document.getElementById('api-link-input').value;
-            if (!newLink) return alert("Please enter a valid API URL.");
+            const links = [];
+            // Gather all 10 inputs
+            for (let i = 1; i <= 10; i++) {
+                links.push(document.getElementById(`api-link-${i}`).value.trim());
+            }
+            
             const btn = document.querySelector('#manager-api-settings button');
-            btn.innerText = "Saving... ⏳"; btn.disabled = true;
+            btn.innerText = "Saving to Database... ⏳"; btn.disabled = true;
             try {
                 const res = await fetch(`${RENDER_BACKEND_URL}/api/settings/api-link`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ newLink })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ links })
                 });
-                const data = await res.json(); alert(data.message); fetchMasterTraffic();
-            } catch(err) { alert("Failed to update API link."); }
-            finally { btn.innerText = "Save & Run API"; btn.disabled = false; }
+                const data = await res.json(); 
+                alert(data.message); 
+                fetchMasterTraffic();
+            } catch(err) { 
+                alert("Failed to update API link."); 
+            } finally { 
+                btn.innerText = "Save & Run All APIs"; btn.disabled = false; 
+            }
         }
 
         async function loadAccountRequests() {
