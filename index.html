@@ -293,23 +293,29 @@
             if (savedUser && savedPass) { document.getElementById('username').value = savedUser; document.getElementById('password').value = savedPass; document.getElementById('remember-me').checked = true; }
         };
 
-        async function login() {
-    const user = document.getElementById('username').value;
-    const pass = document.getElementById('password').value;
+                async function login() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
     if(!user || !pass) return alert("Enter username and password");
     
     const btn = document.querySelector('.login-card button');
     btn.innerText = "Logging in... ⏳"; btn.disabled = true;
 
     try {
-        // Ask backend if this user is a cloned manager
-        const res = await fetch(`${RENDER_BACKEND_URL}/api/verify-manager`, {
+        // Send login credentials to the unified endpoint
+        const res = await fetch(`${RENDER_BACKEND_URL}/api/verify-login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: user, password: pass })
         });
         const data = await res.json();
         
+        // Block login if credentials are not found in the database
+        if (!res.ok || !data.success) {
+            alert(data.message || "Invalid username or password!");
+            return;
+        }
+
         if (document.getElementById('remember-me').checked) { 
             localStorage.setItem('deepSmsUser', user); 
             localStorage.setItem('deepSmsPass', pass); 
@@ -351,7 +357,6 @@
         btn.innerText = "Login"; btn.disabled = false;
     }
 }
-
         function logout() { loggedInUser = ''; document.getElementById('dashboard-wrapper').style.display = 'none'; document.getElementById('login-wrapper').style.display = 'flex'; }
 
         function copyMyApi() {
