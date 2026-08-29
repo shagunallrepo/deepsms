@@ -417,13 +417,43 @@
             }
         }
 
-        async function loadAccountRequests() {
+                async function loadAccountRequests() {
             const res = await fetch(`${RENDER_BACKEND_URL}/api/account-requests`);
             const data = await res.json();
             let html = '';
-            data.forEach(r => { html += `<tr><td>${r.date}</td><td><strong style="color:#0056b3;">${r.username}</strong></td><td>${r.password}</td><td>${r.email}</td><td>${r.whatsapp}</td><td><button class="btn-purple" onclick="clearRequest('${r.id}')" style="background:#dc3545;">Clear</button></td></tr>`; });
+            data.forEach(r => { 
+                html += `<tr>
+                    <td>${r.date}</td>
+                    <td><strong style="color:#0056b3;">${r.username}</strong></td>
+                    <td>${r.password}</td>
+                    <td>${r.email}</td>
+                    <td>${r.whatsapp}</td>
+                    <td>
+                        <button class="btn-purple" style="background:#28a745; margin-right:5px;" onclick="approveRequest('${r.username}', '${r.password}', '${r.id}')">Approve</button>
+                        <button class="btn-purple" style="background:#dc3545;" onclick="clearRequest('${r.id}')">Clear</button>
+                    </td>
+                </tr>`; 
+            });
             document.getElementById('requests-table-body').innerHTML = html || "<tr><td colspan='6'>No pending requests.</td></tr>";
         }
+
+        async function approveRequest(username, password, id) {
+            try {
+                // Save user permanently to database
+                await fetch(`${RENDER_BACKEND_URL}/api/approve-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                // Remove from the pending requests list
+                await clearRequest(id);
+                alert(`User ${username} has been approved and can now log in!`);
+            } catch (err) {
+                alert("Failed to approve user.");
+            }
+        }
+
         async function clearRequest(id) { await fetch(`${RENDER_BACKEND_URL}/api/account-requests/${id}`, { method: 'DELETE' }); loadAccountRequests(); }
 
         // Dashboard Graphics
