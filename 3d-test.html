@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Login Test</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1a1a1a;
+            font-family: sans-serif;
+            margin: 0;
+        }
+
+        .scene {
+            width: 320px;
+            height: 400px;
+            perspective: 1000px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 30px;
+            box-sizing: border-box;
+            background: #2a2a2a;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        input {
+            margin: 10px 0;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #333;
+            color: white;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .toggle-text {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.9em;
+            cursor: pointer;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <div class="card" id="loginCard">
+            <div class="card-face card-front">
+                <h2>Welcome Back</h2>
+                <input type="text" placeholder="Username" />
+                <input type="password" placeholder="Password" />
+                <button>Login</button>
+                <p class="toggle-text" onclick="flipCard()">Need an account? Sign Up</p>
+            </div>
+
+            <div class="card-face card-back">
+                <h2>Create Account</h2>
+                <input type="text" placeholder="Email" />
+                <input type="password" placeholder="Password" />
+                <button>Register</button>
+                <p class="toggle-text" onclick="flipCard()">Already have an account? Login</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Click to Flip Function
+        function flipCard() {
+            const card = document.getElementById('loginCard');
+            card.classList.toggle('is-flipped');
+        }
+
+        // 2. Mouse Tracking 3D Tilt Function
+        const scene = document.querySelector('.scene');
+        const card = document.querySelector('.card');
+
+        scene.addEventListener('mousemove', (e) => {
+            // Don't tilt if the card is currently flipped to the back
+            if(card.classList.contains('is-flipped')) return; 
+
+            const rect = scene.getBoundingClientRect();
+            const x = e.clientX - rect.left; 
+            const y = e.clientY - rect.top;  
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -15; 
+            const rotateY = ((x - centerX) / centerX) * 15;  
+            
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        scene.addEventListener('mouseenter', () => {
+            if(!card.classList.contains('is-flipped')) {
+                card.style.transition = 'none';
+            }
+        });
+
+        scene.addEventListener('mouseleave', () => {
+            if(!card.classList.contains('is-flipped')) {
+                card.style.transition = 'transform 0.5s ease';
+                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            }
+        });
+    </script>
+</body>
+</html>
