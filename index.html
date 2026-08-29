@@ -180,12 +180,29 @@
 
                 <div id="traffic-panel" class="panel-section">
                     <div id="manager-api-settings" style="display:none; margin-bottom: 25px; background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                        <h4 style="margin-top:0; color:#333;">🔌 Manage Live API Connection</h4>
-                        <p style="font-size:13px; color:#666; margin-top:-5px; margin-bottom:15px;">Update the source endpoint for all global traffic.</p>
-                        <div class="manager-input-row" style="margin-bottom:0;">
-                            <input type="text" id="api-link-input" placeholder="Enter new API URL (http://...)">
-                            <button class="btn-purple" style="background:#10b981;" onclick="updateApiLink()">Save & Run API</button>
-                        </div>
+    <h4 style="margin-top:0; color:#333;">🔌 Manage Live API Connections (Up to 10)</h4>
+    <p style="font-size:13px; color:#666; margin-top:-5px; margin-bottom:15px;">Enter up to 10 source endpoints. Leave unused fields blank.</p>
+    
+    <style>
+        .api-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .api-grid input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
+    </style>
+    
+    <div class="api-grid">
+        <input type="text" id="api-link-1" placeholder="API URL 1 (http://...)">
+        <input type="text" id="api-link-2" placeholder="API URL 2">
+        <input type="text" id="api-link-3" placeholder="API URL 3">
+        <input type="text" id="api-link-4" placeholder="API URL 4">
+        <input type="text" id="api-link-5" placeholder="API URL 5">
+        <input type="text" id="api-link-6" placeholder="API URL 6">
+        <input type="text" id="api-link-7" placeholder="API URL 7">
+        <input type="text" id="api-link-8" placeholder="API URL 8">
+        <input type="text" id="api-link-9" placeholder="API URL 9">
+        <input type="text" id="api-link-10" placeholder="API URL 10">
+    </div>
+    
+    <button class="btn-purple" style="background:#10b981; width:100%;" onclick="updateApiLink()">Save & Run All APIs</button>
+</div>
                     </div>
                     <h3>Global Master Traffic</h3>
                     <div id="traffic-table-container">Loading secure data...</div>
