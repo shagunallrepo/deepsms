@@ -161,7 +161,19 @@
                         <tbody id="mynumbers-table-body"></tbody>
                     </table>
                 </div>
-
+<div id="cloner-panel" class="panel-section">
+    <h3>Manager Cloner</h3>
+    <div style="margin-bottom: 25px; background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ff5722; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <h4 style="margin-top:0; color:#333;">👯 Create New Manager Account</h4>
+        <p style="font-size:13px; color:#666; margin-top:-5px; margin-bottom:15px;">Generate credentials to grant another user full admin dashboard access.</p>
+        <div class="manager-input-row" style="margin-bottom:0;">
+            <input type="text" id="cloner-username" placeholder="New Username">
+            <input type="text" id="cloner-password" placeholder="New Password">
+            <button class="btn-purple" style="background:#ff5722;" onclick="createManager()">Clone Manager</button>
+        </div>
+    </div>
+</div>
+                
                 <div id="mysms-panel" class="panel-section">
                     <h3>My SMS Traffic (Payout: $0.012/msg)</h3>
 
